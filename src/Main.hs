@@ -1,4 +1,6 @@
 module Main where
-import Example
+import Svg
+import Shapes
 
-main = runExample
+main = do
+    showSvg $ toSvg $ (identity, circle, (style 0 0 0)):[]

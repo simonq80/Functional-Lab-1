@@ -1,7 +1,7 @@
 module Shapes(
-  Shape, Point, Vector, Transform, Drawing,
+  Shape, Point, Vector, Transform, Stylesheet, getStyles, Drawing,
   point, getX, getY,
-  empty, circle, square,
+  empty, circle, square, style,
   identity, translate, rotate, scale, (<+>),
   inside)  where
 
@@ -51,10 +51,13 @@ empty = Empty
 circle = Circle
 square = Square
 
-data Stylesheet = Style Int Int Int
+data Stylesheet = Style Integer Integer Integer
 
-style :: Int -> Int -> Int -> Stylesheet
+style :: Integer -> Integer -> Integer -> Stylesheet
 style borderwidth bordercolor fillcolor = Style borderwidth bordercolor fillcolor
+
+getStyles :: Stylesheet -> ((Integer, Integer), Integer)
+getStyles (Style x y z) = ((x, y), z)
 -- Transformations
 
 data Transform = Identity
@@ -79,15 +82,15 @@ transform (Compose t1 t2)            p = transform t2 $ transform t1 p
 
 -- Drawings
 
-type Drawing = [(Transform,Shape)]
+type Drawing = [(Transform,Shape,Stylesheet)]
 
 -- interpretation function for drawings
 
 inside :: Point -> Drawing -> Bool
 inside p d = or $ map (inside1 p) d
 
-inside1 :: Point -> (Transform, Shape) -> Bool
-inside1 p (t,s) = insides (transform t p) s
+inside1 :: Point -> (Transform, Shape, Stylesheet) -> Bool
+inside1 p (t,s,_) = insides (transform t p) s
 
 insides :: Point -> Shape -> Bool
 p `insides` Empty = False
