@@ -27,8 +27,8 @@ drawingToSvg d = case d of
 
 
 shapeToSvg :: (Transform, Shape, Stylesheet)-> S.Svg
-shapeToSvg (trans, circle, style) = foldl (!) S.circle ([(A.cx "5"), (A.cy "5") , (A.r "1")]++(transToSvg trans)++(stylesToSvg style))
-shapeToSvg (trans, square, style) = foldl (!) S.rect ((transToSvg trans)++(stylesToSvg style))
+shapeToSvg (trans, Circle, style) = foldl (!) S.circle ([(A.cx "0"), (A.cy "0") , (A.r "1")]++(transToSvg trans)++(stylesToSvg style))
+shapeToSvg (trans, Square, style) = foldl (!) S.rect ([(A.width "1"), (A.height "1"), (A.x "0"), (A.y "0")]++(transToSvg trans)++(stylesToSvg style))
 shapeToSvg (_, _, _) = S.rect 
 
 transToSvg :: Transform -> [S.Attribute]
