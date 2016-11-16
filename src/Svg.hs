@@ -27,18 +27,26 @@ drawingToSvg d = case d of
 
 
 shapeToSvg :: (Transform, Shape, Stylesheet)-> S.Svg
-shapeToSvg (trans, circle, style) = foldl (!) S.circle ([(A.cx "5"), (A.cy "5") , (A.r "1")]++(transToSvg trans)++(styleToSvg style))
-shapeToSvg (trans, square, style) = foldl (!) S.rect ((transToSvg trans)++(styleToSvg style))
+shapeToSvg (trans, circle, style) = foldl (!) S.circle ([(A.cx "5"), (A.cy "5") , (A.r "1")]++(transToSvg trans)++(stylesToSvg style))
+shapeToSvg (trans, square, style) = foldl (!) S.rect ((transToSvg trans)++(stylesToSvg style))
 shapeToSvg (_, _, _) = S.rect 
 
 transToSvg :: Transform -> [S.Attribute]
-transToSvg identity = []
-transToSvg scale = [] 
-transToSvg t = [(A.height "1"), (A.width "2")]
+transToSvg t = [A.transform (S.stringValue $ ("translate("++(show a) ++ " " ++ (show b) ++ ") scale(" ++ (show c) ++ " " ++ (show d) ++ ") rotate(" ++ (show e) ++ " 5 5)"))]
+    where (a, b, c, d, e) = getTrans t
 
-styleToSvg :: Stylesheet -> [S.Attribute]
-styleToSvg s = [(A.fill (mkColor $ snd (getStyles s))), (A.strokeWidth  (S.stringValue $ show $ fst $ fst $ getStyles s))] 
+stylesToSvg :: Stylesheet -> [S.Attribute]
+stylesToSvg s = map styleToSvg s
 
-mkColor :: Integer -> S.AttributeValue
-mkColor c = S.stringValue $ "#" ++  (showHex c "")
+styleToSvg :: (String,Double) -> S.Attribute
+styleToSvg ("fillColor", x) = A.fill (mkColor x)
+styleToSvg ("borderColor", x) = A.stroke (mkColor x)
+styleToSvg ("borderWidth", x) = A.strokeWidth (S.stringValue $ show x) 
 
+mkColor :: Double -> S.AttributeValue
+mkColor c = S.stringValue $ "#" ++  (setLength (showHex (floor c) ""))
+
+setLength :: String -> String
+setLength s = if (length s < 6)
+    then setLength $ "0" ++ s
+    else take 6 s

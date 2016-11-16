@@ -1,7 +1,7 @@
 module Shapes(
-  Shape, Point, Vector, Transform, Stylesheet, getStyles, Drawing,
-  point, getX, getY,
-  empty, circle, square, style,
+  Shape, Point, Vector, Transform, Stylesheet, Drawing,
+  point, getX, getY, getTrans,
+  empty, circle, square,
   identity, translate, rotate, scale, (<+>),
   inside)  where
 
@@ -21,6 +21,9 @@ mult (Matrix r0 r1) v = Vector (cross r0 v) (cross r1 v)
 invert :: Matrix -> Matrix
 invert (Matrix (Vector a b) (Vector c d)) = matrix (d / k) (-b / k) (-c / k) (a / k)
   where k = a * d - b * c
+
+getFirst :: Matrix -> Vector
+getFirst (Matrix a b) = a
         
 -- 2x2 square matrices are all we need.
 data Matrix = Matrix Vector Vector
@@ -51,13 +54,8 @@ empty = Empty
 circle = Circle
 square = Square
 
-data Stylesheet = Style Integer Integer Integer
+type Stylesheet = [(String, Double)]
 
-style :: Integer -> Integer -> Integer -> Stylesheet
-style borderwidth bordercolor fillcolor = Style borderwidth bordercolor fillcolor
-
-getStyles :: Stylesheet -> ((Integer, Integer), Integer)
-getStyles (Style x y z) = ((x, y), z)
 -- Transformations
 
 data Transform = Identity
@@ -72,6 +70,25 @@ translate = Translate
 scale = Scale
 rotate angle = Rotate $ matrix (cos angle) (-sin angle) (sin angle) (cos angle)
 t0 <+> t1 = Compose t0 t1
+
+-- (tx, ty, sx, sy, r)
+getTrans :: Transform -> (Double, Double, Double, Double, Double)
+getTrans s = fixScale $ getTransformations s
+
+fixScale :: (Double, Double, Double, Double, Double) -> (Double, Double, Double, Double, Double)
+fixScale (a, b, 0, d, e) = fixScale (a, b, 1, d, e)
+fixScale (a, b, c, 0, e) = fixScale (a, b, c, 1, e)
+fixScale (a, b, c, d, e) = (a, b, c, d, e)
+
+getTransformations :: Transform -> (Double, Double, Double, Double, Double)
+getTransformations Identity = (0, 0, 0, 0, 0)
+getTransformations (Translate (Vector tx ty)) = (tx, ty, 0, 0, 0)
+getTransformations (Scale (Vector tx ty)) = (0, 0, tx, ty, 0)
+getTransformations (Rotate m) = (0, 0, 0, 0, (acos $ getX $ getFirst m))
+getTransformations (Compose x y) = ((a1+a2), (b1+b2), (c1+c2), (d1+d2), (e1+e2))
+    where (a1, b1, c1, d1, e1) = getTransformations x
+          (a2, b2, c2, d2, e2) = getTransformations y 
+
 
 transform :: Transform -> Point -> Point
 transform Identity                   x = id x
