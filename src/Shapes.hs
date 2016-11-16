@@ -1,5 +1,5 @@
 module Shapes(
-  Shape(..), Point, Vector, Transform, Stylesheet, Drawing,
+  Shape(..), Point, Vector(..), Transform(..), Stylesheet, Drawing,
   point, getX, getY, getTrans,
   empty, circle, square,
   identity, translate, rotate, scale, (<+>),
@@ -9,7 +9,7 @@ module Shapes(
 -- Utilities
 
 data Vector = Vector Double Double
-              deriving Show
+              deriving (Show, Read)
 vector = Vector
 
 cross :: Vector -> Vector -> Double
@@ -27,7 +27,7 @@ getFirst (Matrix a b) = a
         
 -- 2x2 square matrices are all we need.
 data Matrix = Matrix Vector Vector
-              deriving Show
+              deriving (Show, Read)
 
 matrix :: Double -> Double -> Double -> Double -> Matrix
 matrix a b c d = Matrix (Vector a b) (Vector c d)
@@ -46,7 +46,7 @@ point = vector
 data Shape = Empty 
            | Circle 
            | Square
-             deriving Show
+             deriving (Show, Read)
 
 empty, circle, square :: Shape
 
@@ -63,7 +63,7 @@ data Transform = Identity
            | Scale Vector
            | Compose Transform Transform
            | Rotate Double
-             deriving Show
+             deriving (Show, Read)
 
 identity = Identity
 translate = Translate

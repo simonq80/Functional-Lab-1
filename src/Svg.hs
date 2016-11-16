@@ -13,6 +13,10 @@ showSvg s = do
         putStrLn a
         writeFile "/users/ugrad/siquigle/Functional/Lab1/out.svg" a 
 
+
+stringToDrawing :: String -> Drawing
+stringToDrawing s = read s
+
 toSvg :: Drawing -> S.Svg
 toSvg d = S.docTypeSvg ! A.version "1.1" ! A.width "1000" ! A.height "1000" ! A.viewbox "0 0 10 10" $ drawingToSvg d
 
