@@ -32,7 +32,7 @@ shapeToSvg (trans, Square, style) = foldl (!) S.rect ([(A.width "1"), (A.height 
 shapeToSvg (_, _, _) = S.rect 
 
 transToSvg :: Transform -> [S.Attribute]
-transToSvg t = [A.transform (S.stringValue $ ("translate("++(show a) ++ " " ++ (show b) ++ ") scale(" ++ (show c) ++ " " ++ (show d) ++ ") rotate(" ++ (show e) ++ " 5 5)"))]
+transToSvg t = [A.transform (S.stringValue $ ("translate("++(show a) ++ " " ++ (show b) ++ ") scale(" ++ (show c) ++ " " ++ (show d) ++ ") rotate(" ++ (show e) ++ " 0 0)"))]
     where (a, b, c, d, e) = getTrans t
 
 stylesToSvg :: Stylesheet -> [S.Attribute]
