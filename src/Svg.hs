@@ -45,7 +45,8 @@ stylesToSvg s = map styleToSvg s
 styleToSvg :: (String,Double) -> S.Attribute
 styleToSvg ("fillColor", x) = A.fill (mkColor x)
 styleToSvg ("borderColor", x) = A.stroke (mkColor x)
-styleToSvg ("borderWidth", x) = A.strokeWidth (S.stringValue $ show x) 
+styleToSvg ("borderWidth", x) = A.strokeWidth (S.stringValue $ show x)
+styleToSvg (_, _) = A.fontSize "1" 
 
 mkColor :: Double -> S.AttributeValue
 mkColor c = S.stringValue $ "#" ++  (setLength (showHex (floor c) ""))

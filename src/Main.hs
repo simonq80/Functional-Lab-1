@@ -11,7 +11,7 @@ import Prelude
 
 main = scotty 3000 $ do
     get "/" $ do
-        html $ "<form method=\"post\" action=\"/svg\"><input name=\"desc\"><input type=\"submit\"></form><p>Example: [((Compose (Scale (Vector 4.1 4.1)) (Rotate 45)), Circle, [(\"fillColor\", 4000), (\"borderWidth\", 0.1)])]</p>"
+        html $ "<form method=\"post\" action=\"/svg\"><input name=\"desc\"><input type=\"submit\"></form><p>Examples:\n [((Compose (Scale (Vector 4.1 4.1)) (Rotate 45)), Circle, [(\"fillColor\", 4000), (\"borderWidth\", 0.1), (\"borderColor\", 128)])] \n [((Scale (Vector 4.1 4.1)), Circle, [(\"fillColor\", 4000), (\"borderWidth\", 0.1)]),((Compose (Translate (Vector 4.1 4.1)) (Rotate 45)), Square, [(\"fillColor\", 4000)]</p>"
     post "/svg" $ do
         str <- param "desc"
         html $ B.pack $ renderSvg $ toSvg $ stringToDrawing $ str
